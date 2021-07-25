@@ -61,7 +61,8 @@ namespace CompanyEmployees
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllers(); // CodeMaze
+                // endpoints.MapRazorPages(); // CodeMaze (removed)
             });
         }
     }
