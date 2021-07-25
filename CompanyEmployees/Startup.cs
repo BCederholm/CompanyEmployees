@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NLog;
+using NLog.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,14 @@ namespace CompanyEmployees
     {
         public Startup(IConfiguration configuration)
         {
+            // LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")); // CodeMaze (old)
+            var config = new ConfigurationBuilder() // CodeMaze (own)
+            .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .Build();
+
+            NLog.LogManager.Configuration = new NLogLoggingConfiguration(config.GetSection("NLog")); // CodeMaze (own)
+
             Configuration = configuration;
         }
 
@@ -25,8 +35,9 @@ namespace CompanyEmployees
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureCors(); // CodeMaze
-            services.ConfigureIISIntegration(); // CodeMaze
+            services.ConfigureCors(); // CodeMaze (custom)
+            services.ConfigureIISIntegration(); // CodeMaze (custom)
+            services.ConfigureLoggerService(); // CodeMaze (custom)
             services.AddControllers(); // CodeMaze
 
             // services.AddRazorPages(); // CodeMaze (removed)
