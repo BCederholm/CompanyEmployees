@@ -1,6 +1,4 @@
-﻿
-using NLog;
-using System;
+﻿using NLog;
 
 namespace LoggerService
 {
