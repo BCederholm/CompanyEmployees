@@ -38,6 +38,7 @@ namespace CompanyEmployees
             services.ConfigureCors(); // CodeMaze (custom)
             services.ConfigureIISIntegration(); // CodeMaze (custom)
             services.ConfigureLoggerService(); // CodeMaze (custom)
+            services.ConfigureSqlContext(Configuration); // CodeMaze (custom)
             services.AddControllers(); // CodeMaze
 
             // services.AddRazorPages(); // CodeMaze (removed)
