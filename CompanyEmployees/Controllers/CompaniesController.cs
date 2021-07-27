@@ -32,6 +32,8 @@ namespace CompanyEmployees.Controllers
         {
             // No try-catch-finally block
 
+            // throw new Exception("Exception"); // Simulate an error
+            
             var companies = _repository.Company.GetAllCompanies(trackChanges: false);
 
             var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
