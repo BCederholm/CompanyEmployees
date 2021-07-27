@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using AutoMapper;
+using Contracts;
 using Entities.DataTransferObjects;
 using LoggerService;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +18,13 @@ namespace CompanyEmployees.Controllers
     {
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
+        private readonly IMapper _mapper;
 
-        public CompaniesController(IRepositoryManager repository, ILoggerManager logger)
+        public CompaniesController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -31,12 +34,7 @@ namespace CompanyEmployees.Controllers
             {
                 var companies = _repository.Company.GetAllCompanies(trackChanges: false);
 
-                var companiesDto = companies.Select(c => new CompanyDto
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    FullAddress = string.Join(' ', c.Address, c.Country)
-                }).ToList();
+                var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
                 
                 return Ok(companiesDto); // Best practice is to return the data transfer obect, not the model
                 // return Ok(companies);

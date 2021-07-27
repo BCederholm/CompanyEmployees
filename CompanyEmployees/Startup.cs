@@ -40,6 +40,7 @@ namespace CompanyEmployees
             services.ConfigureLoggerService(); // CodeMaze (custom)
             services.ConfigureSqlContext(Configuration); // CodeMaze (custom)
             services.ConfigureRepositoryManager(); // CodeMaze (custom)
+            services.AddAutoMapper(typeof(Startup)); // CodeMaze 
             services.AddControllers(); // CodeMaze
 
             // services.AddRazorPages(); // CodeMaze (removed)
