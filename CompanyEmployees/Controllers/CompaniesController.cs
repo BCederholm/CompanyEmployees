@@ -39,7 +39,23 @@ namespace CompanyEmployees.Controllers
             var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
             return Ok(companiesDto); // Best practice is to return the data transfer obect, not the model
-                                     // return Ok(companies);
+            // return Ok(companies);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetCompany(Guid id)
+        {
+            var company = _repository.Company.GetCompany(id, trackChanges: false);
+            if (company == null)
+            {
+                _logger.LogInfo($"Company with id: {id} doesn't exist in the database.");
+                return NotFound(); // 404
+            }
+            else
+            {
+                var companyDto = _mapper.Map<CompanyDto>(company);
+                return Ok(companyDto); // 200
+            }
         }
     }
 }
