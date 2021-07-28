@@ -47,7 +47,8 @@ namespace CompanyEmployees
             {
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
-            }).AddXmlDataContractSerializerFormatters(); // CodeMaze
+            }).AddXmlDataContractSerializerFormatters()
+            .AddCustomCSVFormatter(); // CodeMaze
 
             // services.AddRazorPages(); // CodeMaze (removed)
         }
