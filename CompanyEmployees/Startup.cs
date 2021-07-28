@@ -46,6 +46,7 @@ namespace CompanyEmployees
             services.AddControllers(config =>
             {
                 config.RespectBrowserAcceptHeader = true;
+                config.ReturnHttpNotAcceptable = true;
             }).AddXmlDataContractSerializerFormatters(); // CodeMaze
 
             // services.AddRazorPages(); // CodeMaze (removed)
