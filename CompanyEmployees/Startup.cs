@@ -44,7 +44,9 @@ namespace CompanyEmployees
             services.ConfigureSqlContext(Configuration); // CodeMaze (custom)
             services.ConfigureRepositoryManager(); // CodeMaze (custom)
             services.AddAutoMapper(typeof(Startup)); // CodeMaze
-            services.AddScoped<ValidationFilterAttribute>(); // CodeMaze
+            services.AddScoped<ValidationFilterAttribute>(); // CodeMaze (custom)
+            services.AddScoped<ValidateCompanyExistsAttribute>(); // CodeMaze (custom)
+            services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>(); // CodeMaze (custom)
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true; // CodeMaze
