@@ -28,7 +28,6 @@ namespace CompanyEmployees.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{id}", Name = "CompanyById")]
         public IActionResult GetCompanies()
         {
             // No try-catch-finally block
@@ -43,7 +42,7 @@ namespace CompanyEmployees.Controllers
             // return Ok(companies);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "CompanyById")]
         public IActionResult GetCompany(Guid id)
         {
             var company = _repository.Company.GetCompany(id, trackChanges: false);
