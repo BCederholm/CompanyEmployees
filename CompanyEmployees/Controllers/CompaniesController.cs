@@ -29,6 +29,7 @@ namespace CompanyEmployees.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
         public IActionResult GetCompanies()
         {
             // No try-catch-finally block
@@ -59,23 +60,6 @@ namespace CompanyEmployees.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult CreateCompany([FromBody] CompanyForCreationDto company)
-        {
-            if (company == null)
-            {
-                _logger.LogError("CompanyForCreationDto object sent from client is null.");
-                return BadRequest("CompanyForCreationDto object is null");
-            }
-            var companyEntity = _mapper.Map<Company>(company);
-            
-            _repository.Company.CreateCompany(companyEntity);
-            _repository.Save();
-            
-            var companyToReturn = _mapper.Map<CompanyDto>(companyEntity);
-            return CreatedAtRoute("CompanyById", new { id = companyToReturn.Id }, companyToReturn); // Returns a Location header with address for retrieving the created company
-        }
-
         [HttpGet("collection/({ids})", Name = "CompanyCollection")]
         public IActionResult GetCompanyCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {
@@ -92,8 +76,33 @@ namespace CompanyEmployees.Controllers
                 _logger.LogError("Some ids are not valid in a collection");
                 return NotFound();
             }
+
             var companiesToReturn = _mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
             return Ok(companiesToReturn);
+        }
+
+        [HttpPost]
+        public IActionResult CreateCompany([FromBody] CompanyForCreationDto company)
+        {
+            if (company == null)
+            {
+                _logger.LogError("CompanyForCreationDto object sent from client is null.");
+                return BadRequest("CompanyForCreationDto object is null");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the CompanyForCreationDto object");
+                return UnprocessableEntity(ModelState);
+            }
+
+            var companyEntity = _mapper.Map<Company>(company);
+
+            _repository.Company.CreateCompany(companyEntity);
+            _repository.Save();
+
+            var companyToReturn = _mapper.Map<CompanyDto>(companyEntity);
+            return CreatedAtRoute("CompanyById", new { id = companyToReturn.Id }, companyToReturn); // Returns a Location header with address for retrieving the created company
         }
 
         [HttpPost("collection")]
@@ -143,6 +152,12 @@ namespace CompanyEmployees.Controllers
             {
                 _logger.LogError("CompanyForUpdateDto object sent from client is null.");
                 return BadRequest("CompanyForUpdateDto object is null");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the CompanyForUpdateDto object");
+                return UnprocessableEntity(ModelState);
             }
 
             var companyEntity = _repository.Company.GetCompany(id, trackChanges: true);

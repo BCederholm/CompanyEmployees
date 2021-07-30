@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -50,6 +51,10 @@ namespace CompanyEmployees
             }).AddNewtonsoftJson() // CodeMaze
               .AddXmlDataContractSerializerFormatters() // CodeMaze
               .AddCustomCSVFormatter(); // CodeMaze
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true; // CodeMaze
+            });
 
             // services.AddRazorPages(); // CodeMaze (removed)
         }
