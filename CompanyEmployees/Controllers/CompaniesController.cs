@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.DataTransferObjects;
+using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ namespace CompanyEmployees.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet("{id}", Name = "CompanyById")]
         public IActionResult GetCompanies()
         {
             // No try-catch-finally block
@@ -57,5 +58,23 @@ namespace CompanyEmployees.Controllers
                 return Ok(companyDto); // 200
             }
         }
+
+        [HttpPost]
+        public IActionResult CreateCompany([FromBody] CompanyForCreationDto company)
+        {
+            if (company == null)
+            {
+                _logger.LogError("CompanyForCreationDto object sent from client is null.");
+                return BadRequest("CompanyForCreationDto object is null");
+            }
+            var companyEntity = _mapper.Map<Company>(company);
+            
+            _repository.Company.CreateCompany(companyEntity);
+            _repository.Save();
+            
+            var companyToReturn = _mapper.Map<CompanyDto>(companyEntity);
+            return CreatedAtRoute("CompanyById", new { id = companyToReturn.Id }, companyToReturn);
+        }
+
     }
 }
