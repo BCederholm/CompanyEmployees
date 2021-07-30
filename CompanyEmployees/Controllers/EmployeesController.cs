@@ -182,7 +182,7 @@ namespace CompanyEmployees.Controllers
 
             patchDoc.ApplyTo(employeeToPatch, ModelState);
 
-            TryValidateModel(employeeToPatch);
+            TryValidateModel(employeeToPatch); // Prevent an invalid employeeEntity from being saved to the database
 
             if (!ModelState.IsValid)
             {
