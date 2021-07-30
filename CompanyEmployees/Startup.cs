@@ -1,5 +1,7 @@
 using CompanyEmployees.ActionFilters;
 using CompanyEmployees.Extensions;
+using Contracts;
+using Entities.DataTransferObjects;
 using LoggerService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
 using NLog.Extensions.Logging;
+using Repository.DataShaping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +50,7 @@ namespace CompanyEmployees
             services.AddScoped<ValidationFilterAttribute>(); // CodeMaze (custom)
             services.AddScoped<ValidateCompanyExistsAttribute>(); // CodeMaze (custom)
             services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>(); // CodeMaze (custom)
+            services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>(); // CodeMaze (custom)
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true; // CodeMaze
