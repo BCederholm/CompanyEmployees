@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CompanyEmployees.ActionFilters;
+using CompanyEmployees.Utility;
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
@@ -22,15 +23,14 @@ namespace CompanyEmployees.Controllers
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
-        private readonly IDataShaper<EmployeeDto> _dataShaper;
+        private readonly EmployeeLinks _employeeLinks;
 
-
-        public EmployeesController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, IDataShaper<EmployeeDto> dataShaper)
+        public EmployeesController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, EmployeeLinks employeeLinks)
         {
             _repository = repository; 
             _logger = logger;
             _mapper = mapper;
-            _dataShaper = dataShaper;
+            _employeeLinks = employeeLinks;
         }
 
         [HttpGet]
@@ -53,7 +53,11 @@ namespace CompanyEmployees.Controllers
 
             var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeesFromDb);
 
-            return Ok(_dataShaper.ShapeData(employeesDto, employeeParameters.Fields));
+            var links = _employeeLinks.TryGenerateLinks(employeesDto, employeeParameters.Fields, companyId, HttpContext);
+            
+            return links.HasLinks ? Ok(links.LinkedEntities) : Ok(links.ShapedEntities);
+
+            // return Ok(_dataShaper.ShapeData(employeesDto, employeeParameters.Fields));
             // return Ok(employeesDto);
             // return Ok(employeesFromDb);
         }

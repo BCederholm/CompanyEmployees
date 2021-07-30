@@ -1,5 +1,6 @@
 using CompanyEmployees.ActionFilters;
 using CompanyEmployees.Extensions;
+using CompanyEmployees.Utility;
 using Contracts;
 using Entities.DataTransferObjects;
 using LoggerService;
@@ -54,6 +55,8 @@ namespace CompanyEmployees
             services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>(); // CodeMaze (custom)
 
             services.AddScoped<ValidateMediaTypeAttribute>(); // CodeMaze (custom)
+
+            services.AddScoped<EmployeeLinks>(); // CodeMaze (custom)
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
