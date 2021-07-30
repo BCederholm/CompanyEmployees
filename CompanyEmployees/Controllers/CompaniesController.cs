@@ -73,8 +73,7 @@ namespace CompanyEmployees.Controllers
             _repository.Save();
             
             var companyToReturn = _mapper.Map<CompanyDto>(companyEntity);
-            return CreatedAtRoute("CompanyById", new { id = companyToReturn.Id }, companyToReturn);
+            return CreatedAtRoute("CompanyById", new { id = companyToReturn.Id }, companyToReturn); // Returns a Location header with address for retrieving the created company
         }
-
     }
 }
