@@ -1,3 +1,4 @@
+using CompanyEmployees.ActionFilters;
 using CompanyEmployees.Extensions;
 using LoggerService;
 using Microsoft.AspNetCore.Builder;
@@ -42,7 +43,12 @@ namespace CompanyEmployees
             services.ConfigureLoggerService(); // CodeMaze (custom)
             services.ConfigureSqlContext(Configuration); // CodeMaze (custom)
             services.ConfigureRepositoryManager(); // CodeMaze (custom)
-            services.AddAutoMapper(typeof(Startup)); // CodeMaze 
+            services.AddAutoMapper(typeof(Startup)); // CodeMaze
+            services.AddScoped<ValidationFilterAttribute>(); // CodeMaze
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true; // CodeMaze
+            });
             // services.AddControllers(); // CodeMaze (replaced)
             services.AddControllers(config =>
             {
@@ -51,11 +57,6 @@ namespace CompanyEmployees
             }).AddNewtonsoftJson() // CodeMaze
               .AddXmlDataContractSerializerFormatters() // CodeMaze
               .AddCustomCSVFormatter(); // CodeMaze
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true; // CodeMaze
-            });
-
             // services.AddRazorPages(); // CodeMaze (removed)
         }
 
