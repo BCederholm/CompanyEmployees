@@ -63,6 +63,7 @@ namespace CompanyEmployees
             }).AddNewtonsoftJson() // CodeMaze
               .AddXmlDataContractSerializerFormatters() // CodeMaze
               .AddCustomCSVFormatter(); // CodeMaze
+            services.AddCustomMediaTypes();
             // services.AddRazorPages(); // CodeMaze (removed)
         }
 
