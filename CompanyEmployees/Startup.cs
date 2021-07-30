@@ -50,7 +50,11 @@ namespace CompanyEmployees
             services.AddScoped<ValidationFilterAttribute>(); // CodeMaze (custom)
             services.AddScoped<ValidateCompanyExistsAttribute>(); // CodeMaze (custom)
             services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>(); // CodeMaze (custom)
+
             services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>(); // CodeMaze (custom)
+
+            services.AddScoped<ValidateMediaTypeAttribute>(); // CodeMaze (custom)
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true; // CodeMaze
