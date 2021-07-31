@@ -20,7 +20,6 @@ namespace CompanyEmployees.Extensions
 {
     public static class ServiceExtensions
     {
-
         public static void ConfigureCors(this IServiceCollection services) =>
             services.AddCors(options =>
             {
@@ -33,6 +32,7 @@ namespace CompanyEmployees.Extensions
         public static void ConfigureIISIntegration(this IServiceCollection services) =>
             services.Configure<IISOptions>(options =>
             {
+
             });
 
         public static void ConfigureLoggerService(this IServiceCollection services) =>
@@ -40,8 +40,7 @@ namespace CompanyEmployees.Extensions
 
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
             services.AddDbContext<RepositoryContext>(opts =>
-                opts.UseSqlServer(configuration.GetConnectionString("sqlConnection"), b =>
-                b.MigrationsAssembly("CompanyEmployees")));
+                opts.UseSqlServer(configuration.GetConnectionString("sqlConnection"), b => b.MigrationsAssembly("CompanyEmployees")));
 
         public static void ConfigureRepositoryManager(this IServiceCollection services) =>
             services.AddScoped<IRepositoryManager, RepositoryManager>();
@@ -53,28 +52,26 @@ namespace CompanyEmployees.Extensions
         {
             services.Configure<MvcOptions>(config =>
             {
-                var newtonsoftJsonOutputFormatter = config.OutputFormatters.OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
+                var newtonsoftJsonOutputFormatter = config.OutputFormatters
+                    .OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
 
                 if (newtonsoftJsonOutputFormatter != null)
                 {
                     newtonsoftJsonOutputFormatter
-                    .SupportedMediaTypes
-                    .Add("application/vnd.codemaze.hateoas+json");
+                    .SupportedMediaTypes.Add("application/vnd.codemaze.hateoas+json");
                     newtonsoftJsonOutputFormatter
-                    .SupportedMediaTypes
-                    .Add("application/vnd.codemaze.apiroot+json");
+                    .SupportedMediaTypes.Add("application/vnd.codemaze.apiroot+json");
                 }
 
-                var xmlOutputFormatter = config.OutputFormatters.OfType<XmlDataContractSerializerOutputFormatter>()?.FirstOrDefault();
+                var xmlOutputFormatter = config.OutputFormatters
+                      .OfType<XmlDataContractSerializerOutputFormatter>()?.FirstOrDefault();
 
                 if (xmlOutputFormatter != null)
                 {
                     xmlOutputFormatter
-                    .SupportedMediaTypes
-                    .Add("application/vnd.codemaze.hateoas+xml");
+                    .SupportedMediaTypes.Add("application/vnd.codemaze.hateoas+xml");
                     xmlOutputFormatter
-                    .SupportedMediaTypes
-                    .Add("application/vnd.codemaze.apiroot+xml");
+                    .SupportedMediaTypes.Add("application/vnd.codemaze.apiroot+xml");
                 }
             });
         }
@@ -92,10 +89,10 @@ namespace CompanyEmployees.Extensions
             });
         }
 
-        public static void ConfigureResponseCaching(this IServiceCollection services) =>
-            services.AddResponseCaching();
+        public static void ConfigureResponseCaching(this IServiceCollection services) => services.AddResponseCaching();
 
-        public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
+        public static void ConfigureHttpCacheHeaders(this IServiceCollection services)
+        {
             services.AddHttpCacheHeaders(
                 (expirationOpt) =>
                 {
@@ -106,6 +103,7 @@ namespace CompanyEmployees.Extensions
                 {
                     validationOpt.MustRevalidate = true;
                 });
-
+            // services.AddHttpContextAccessor(); 
+        }
     }
 }
