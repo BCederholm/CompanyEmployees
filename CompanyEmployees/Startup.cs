@@ -71,6 +71,7 @@ namespace CompanyEmployees
 
             services.AddAuthentication(); // CodeMaze 27
             services.ConfigureIdentity(); // CodeMaze 27
+            services.ConfigureJWT(Configuration); // CodeMaze 27
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

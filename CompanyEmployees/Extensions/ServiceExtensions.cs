@@ -5,6 +5,7 @@ using Entities;
 using Entities.Models;
 using LoggerService;
 using Marvin.Cache.Headers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CompanyEmployees.Extensions
@@ -131,9 +134,9 @@ namespace CompanyEmployees.Extensions
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
         }
 
-        public static void ConfigureIdentity(this IServiceCollection services)
+        public static void ConfigureIdentity(this IServiceCollection services) // CodeMaze 27
         {
-            var builder = services.AddIdentityCore<User>(o => // IdentityServiceCollectionExtensions
+            var builder = services.AddIdentityCore<User>(o =>
             {
                 o.Password.RequireDigit = true;
                 o.Password.RequireLowercase = false;
@@ -143,8 +146,33 @@ namespace CompanyEmployees.Extensions
                 o.User.RequireUniqueEmail = true;
             });
 
-            builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services); // Microsoft.AspNetCore.Identity
-            builder.AddEntityFrameworkStores<RepositoryContext>().AddDefaultTokenProviders(); // IdentityEntityFrameworkBuilderExtensions | Microsoft.AspNetCore.Identity
+            builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
+            builder.AddEntityFrameworkStores<RepositoryContext>().AddDefaultTokenProviders();
+        }
+
+        public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration) // CodeMaze 27
+        {
+            var jwtSettings = configuration.GetSection("JwtSettings");
+            var secretKey = Environment.GetEnvironmentVariable("SECRET");
+
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // "Bearer"
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // "Bearer"
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true, // The issuer is the actual server that created the token
+                    ValidateAudience = true, // The receiver of the token is a valid recipient
+                    ValidateLifetime = true, // The token has not expired
+                    ValidateIssuerSigningKey = true, // The signing key is valid and is trusted by the server
+                    ValidIssuer = jwtSettings.GetSection("validIssuer").Value, // "Represents a valid issuer that will be used to check against the token's issuer." - The unique custom name of the service that provides JWT?
+                    ValidAudience = jwtSettings.GetSection("validAudience").Value, // "Represents a valid audience that will be used to check against the token's audience." - The https address where the service that provides JWT is hosted?
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)) // The secret key that the server uses to generate the signature for JWT
+                };
+            });
         }
     }
 }
