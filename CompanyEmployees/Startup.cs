@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using CompanyEmployees.ActionFilters;
 using CompanyEmployees.Extensions;
 using CompanyEmployees.Utility;
@@ -63,6 +64,11 @@ namespace CompanyEmployees
             services.ConfigureResponseCaching(); // CodeMaze (custom)
             services.ConfigureHttpCacheHeaders(); // CodeMaze (custom)
 
+            services.AddMemoryCache(); // CodeMaze 26
+
+            services.ConfigureRateLimitingOptions(); // CodeMaze 26
+            services.AddHttpContextAccessor(); // CodeMaze 26
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true; // CodeMaze
@@ -103,6 +109,8 @@ namespace CompanyEmployees
                 ForwardedHeaders = ForwardedHeaders.All
             });
 
+            app.UseIpRateLimiting(); // CodeMaze 26
+
             app.UseRouting();
             app.UseCors("CorsPolicy"); // CodeMaze
             app.UseResponseCaching(); // CodeMaze
@@ -113,7 +121,6 @@ namespace CompanyEmployees
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers(); // CodeMaze
-                // endpoints.MapRazorPages(); // CodeMaze (removed)
             });
         }
     }
