@@ -69,6 +69,9 @@ namespace CompanyEmployees
             services.ConfigureRateLimitingOptions(); // CodeMaze 26
             services.AddHttpContextAccessor(); // CodeMaze 26
 
+            services.AddAuthentication(); // CodeMaze 27
+            services.ConfigureIdentity(); // CodeMaze 27
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true; // CodeMaze
@@ -83,7 +86,6 @@ namespace CompanyEmployees
               .AddXmlDataContractSerializerFormatters() // CodeMaze
               .AddCustomCSVFormatter(); // CodeMaze
             services.AddCustomMediaTypes();
-            // services.AddRazorPages(); // CodeMaze (removed)
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
