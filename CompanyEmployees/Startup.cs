@@ -58,6 +58,8 @@ namespace CompanyEmployees
 
             services.AddScoped<EmployeeLinks>(); // CodeMaze (custom)
 
+            services.ConfigureVersioning(); // CodeMaze (custom)
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true; // CodeMaze
