@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace CompanyEmployees.Controllers
 {
+    [ApiVersion("1.0")]
     [Route("api/companies")] // Base route
     // [Route("api/[controller]")] // Replaces default
     [ApiController]
