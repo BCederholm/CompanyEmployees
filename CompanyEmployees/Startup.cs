@@ -61,6 +61,7 @@ namespace CompanyEmployees
             services.ConfigureVersioning(); // CodeMaze (custom)
 
             services.ConfigureResponseCaching(); // CodeMaze (custom)
+            services.ConfigureHttpCacheHeaders(); // CodeMaze (custom)
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -105,6 +106,7 @@ namespace CompanyEmployees
             app.UseRouting();
             app.UseCors("CorsPolicy"); // CodeMaze
             app.UseResponseCaching(); // CodeMaze
+            app.UseHttpCacheHeaders(); // CodeMaze
 
             app.UseAuthorization();
 

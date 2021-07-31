@@ -18,7 +18,7 @@ namespace CompanyEmployees.Controllers
     [Route("api/companies")] // Base route
     // [Route("api/[controller]")] // Replaces default
     [ApiController]
-    [ResponseCache(CacheProfileName = "120SecondsDuration")]
+    // [ResponseCache(CacheProfileName = "120SecondsDuration")]
     public class CompaniesController : ControllerBase
     {
         private readonly IRepositoryManager _repository;
@@ -48,7 +48,7 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpGet("{id}", Name = "CompanyById")]
-        [ResponseCache(Duration = 60)]
+        // [ResponseCache(Duration = 60)]
         public async Task<IActionResult> GetCompany(Guid id)
         {
             var company = await _repository.Company.GetCompanyAsync(id, trackChanges: false);
