@@ -60,6 +60,8 @@ namespace CompanyEmployees
 
             services.ConfigureVersioning(); // CodeMaze (custom)
 
+            services.ConfigureResponseCaching(); // CodeMaze (custom)
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true; // CodeMaze
@@ -69,6 +71,7 @@ namespace CompanyEmployees
             {
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
+                config.CacheProfiles.Add("120SecondsDuration", new CacheProfile { Duration = 120 });
             }).AddNewtonsoftJson() // CodeMaze
               .AddXmlDataContractSerializerFormatters() // CodeMaze
               .AddCustomCSVFormatter(); // CodeMaze
@@ -101,6 +104,7 @@ namespace CompanyEmployees
 
             app.UseRouting();
             app.UseCors("CorsPolicy"); // CodeMaze
+            app.UseResponseCaching(); // CodeMaze
 
             app.UseAuthorization();
 
