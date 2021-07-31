@@ -5,17 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Entities
 {
-    public class RepositoryContext : IdentityDbContext<User> // Microsoft.AspNetCore.Identity.EntityFrameworkCore
+    public class RepositoryContext : IdentityDbContext<User> // CodeMaze 27
     {
         public RepositoryContext(DbContextOptions options): base(options)
         { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // Microsoft.AspNetCore.Identity.EntityFrameworkCore
+            base.OnModelCreating(modelBuilder); // CodeMaze 27
 
             modelBuilder.ApplyConfiguration(new CompanyConfiguration());
             modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration()); // CodeMaze 27
         }
 
         public DbSet<Company> Companies { get; set; }
