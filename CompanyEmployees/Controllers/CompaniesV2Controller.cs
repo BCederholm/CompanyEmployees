@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CompanyEmployees.Controllers
 {
     // [ApiVersion("2.0")]
-    [ApiVersion("2.0", Deprecated = true)]
+    // [ApiVersion("2.0", Deprecated = true)]
     // [Route("api/{v:apiversion}/companies")]
     [Route("api/companies")]
     [ApiController]
