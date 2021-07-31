@@ -2,6 +2,7 @@
 using Contracts;
 using Entities;
 using LoggerService;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -53,7 +54,7 @@ namespace CompanyEmployees.Extensions
             services.Configure<MvcOptions>(config =>
             {
                 var newtonsoftJsonOutputFormatter = config.OutputFormatters.OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
-                
+
                 if (newtonsoftJsonOutputFormatter != null)
                 {
                     newtonsoftJsonOutputFormatter
@@ -63,9 +64,9 @@ namespace CompanyEmployees.Extensions
                     .SupportedMediaTypes
                     .Add("application/vnd.codemaze.apiroot+json");
                 }
-                
+
                 var xmlOutputFormatter = config.OutputFormatters.OfType<XmlDataContractSerializerOutputFormatter>()?.FirstOrDefault();
-                
+
                 if (xmlOutputFormatter != null)
                 {
                     xmlOutputFormatter
@@ -95,6 +96,16 @@ namespace CompanyEmployees.Extensions
             services.AddResponseCaching();
 
         public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
-            services.AddHttpCacheHeaders();
+            services.AddHttpCacheHeaders(
+                (expirationOpt) =>
+                {
+                    expirationOpt.MaxAge = 65;
+                    expirationOpt.CacheLocation = CacheLocation.Private;
+                },
+                (validationOpt) =>
+                {
+                    validationOpt.MustRevalidate = true;
+                });
+
     }
 }
