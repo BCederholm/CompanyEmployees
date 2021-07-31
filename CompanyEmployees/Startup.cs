@@ -72,6 +72,7 @@ namespace CompanyEmployees
             services.AddAuthentication(); // CodeMaze 27
             services.ConfigureIdentity(); // CodeMaze 27
             services.ConfigureJWT(Configuration); // CodeMaze 27
+            services.AddScoped<IAuthenticationManager, AuthenticationManager>(); // CodeMaze 27
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -116,9 +117,11 @@ namespace CompanyEmployees
 
             app.UseRouting();
             app.UseCors("CorsPolicy"); // CodeMaze
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
             app.UseResponseCaching(); // CodeMaze
             app.UseHttpCacheHeaders(); // CodeMaze
 
+            app.UseAuthentication(); // CodeMaze 27
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

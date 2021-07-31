@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace CompanyEmployees.Utility
 {
-
     public class EmployeeLinks
     {
         private readonly LinkGenerator _linkGenerator;
@@ -24,10 +23,10 @@ namespace CompanyEmployees.Utility
             _dataShaper = dataShaper;
         }
 
-
         public LinkResponse TryGenerateLinks(IEnumerable<EmployeeDto> employeesDto, string fields, Guid companyId, HttpContext httpContext)
         {
             var shapedEmployees = ShapeData(employeesDto, fields);
+
             if (ShouldGenerateLinks(httpContext))
                 return ReturnLinkdedEmployees(employeesDto, fields, companyId, httpContext, shapedEmployees);
 
@@ -42,22 +41,25 @@ namespace CompanyEmployees.Utility
         private bool ShouldGenerateLinks(HttpContext httpContext)
         {
             var mediaType = (MediaTypeHeaderValue)httpContext.Items["AcceptHeaderMediaType"];
-            return mediaType.SubTypeWithoutSuffix.EndsWith("hateoas", StringComparison.InvariantCultureIgnoreCase);}
-        
-        private LinkResponse ReturnShapedEmployees(List<Entity> shapedEmployees) =>
-            new LinkResponse { ShapedEntities = shapedEmployees };
 
+            return mediaType.SubTypeWithoutSuffix.EndsWith("hateoas", StringComparison.InvariantCultureIgnoreCase);
+		}
+        
+        private LinkResponse ReturnShapedEmployees(List<Entity> shapedEmployees) => new LinkResponse { ShapedEntities = shapedEmployees };
 
         private LinkResponse ReturnLinkdedEmployees(IEnumerable<EmployeeDto> employeesDto, string fields, Guid companyId, HttpContext httpContext, List<Entity> shapedEmployees)
         {
             var employeeDtoList = employeesDto.ToList(); 
+
             for (var index = 0; index < employeeDtoList.Count(); index++)
             {
                 var employeeLinks = CreateLinksForEmployee(httpContext, companyId, employeeDtoList[index].Id, fields);
                 shapedEmployees[index].Add("Links", employeeLinks);
             }
+
             var employeeCollection = new LinkCollectionWrapper<Entity>(shapedEmployees);
             var linkedEmployees = CreateLinksForEmployees(httpContext, employeeCollection); 
+
             return new LinkResponse { HasLinks = true, LinkedEntities = linkedEmployees };
         }
 
@@ -91,5 +93,4 @@ namespace CompanyEmployees.Utility
             return employeesWrapper;
         }
     }
-
 }
