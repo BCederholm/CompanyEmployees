@@ -74,6 +74,8 @@ namespace CompanyEmployees
             services.ConfigureJWT(Configuration); // CodeMaze 27
             services.AddScoped<IAuthenticationManager, AuthenticationManager>(); // CodeMaze 27
 
+            services.ConfigureSwagger(); // CodeMaze 28
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true; // CodeMaze
@@ -123,6 +125,13 @@ namespace CompanyEmployees
 
             app.UseAuthentication(); // CodeMaze 27
             app.UseAuthorization();
+
+            app.UseSwagger(); // CodeMaze 28
+            app.UseSwaggerUI(s => // CodeMaze 28
+            {
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "Code Maze API v1");
+                s.SwaggerEndpoint("/swagger/v2/swagger.json", "Code Maze API v2");
+            });
 
             app.UseEndpoints(endpoints =>
             {

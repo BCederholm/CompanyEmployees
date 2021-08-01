@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Repository;
 using System;
 using System.Collections.Generic;
@@ -172,6 +173,15 @@ namespace CompanyEmployees.Extensions
                     ValidAudience = jwtSettings.GetSection("validAudience").Value, // "Represents a valid audience that will be used to check against the token's audience." - The https address where the service that provides JWT is hosted?
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)) // The secret key that the server uses to generate the signature for JWT
                 };
+            });
+        }
+
+        public static void ConfigureSwagger(this IServiceCollection services) // CodeMaze 28
+        {
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1", new OpenApiInfo { Title = "Code Maze API", Version = "v1" });
+                s.SwaggerDoc("v2", new OpenApiInfo { Title = "Code Maze API", Version = "v2" });
             });
         }
     }
