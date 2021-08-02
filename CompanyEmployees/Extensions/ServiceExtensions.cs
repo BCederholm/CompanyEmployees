@@ -23,13 +23,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CompanyEmployees.Extensions
 {
     public static class ServiceExtensions
     {
-        public static void ConfigureCors(this IServiceCollection services) =>
+        public static void ConfigureCors(this IServiceCollection services) => // CodeMaze 1
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder =>
@@ -38,26 +37,25 @@ namespace CompanyEmployees.Extensions
                     .AllowAnyHeader());
             });
 
-        public static void ConfigureIISIntegration(this IServiceCollection services) =>
+        public static void ConfigureIISIntegration(this IServiceCollection services) => // CodeMaze 1
             services.Configure<IISOptions>(options =>
             {
-
             });
 
-        public static void ConfigureLoggerService(this IServiceCollection services) =>
+        public static void ConfigureLoggerService(this IServiceCollection services) => // CodeMaze 2
             services.AddScoped<ILoggerManager, LoggerManager>();
 
-        public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
+        public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) => // CodeMaze 3
             services.AddDbContext<RepositoryContext>(opts =>
                 opts.UseSqlServer(configuration.GetConnectionString("sqlConnection"), b => b.MigrationsAssembly("CompanyEmployees")));
 
-        public static void ConfigureRepositoryManager(this IServiceCollection services) =>
+        public static void ConfigureRepositoryManager(this IServiceCollection services) => // CodeMaze 3
             services.AddScoped<IRepositoryManager, RepositoryManager>();
 
-        public static IMvcBuilder AddCustomCSVFormatter(this IMvcBuilder builder) =>
+        public static IMvcBuilder AddCustomCSVFormatter(this IMvcBuilder builder) => // CodeMaze 7
             builder.AddMvcOptions(config => config.OutputFormatters.Add(new CsvOutputFormatter()));
 
-        public static void AddCustomMediaTypes(this IServiceCollection services)
+        public static void AddCustomMediaTypes(this IServiceCollection services) // CodeMaze 21
         {
             services.Configure<MvcOptions>(config =>
             {
@@ -85,24 +83,23 @@ namespace CompanyEmployees.Extensions
             });
         }
 
-        public static void ConfigureVersioning(this IServiceCollection services)
+        public static void ConfigureVersioning(this IServiceCollection services) // CodeMaze 24
         {
             services.AddApiVersioning(opt =>
             {
                 opt.ReportApiVersions = true;
                 opt.AssumeDefaultVersionWhenUnspecified = true;
                 opt.DefaultApiVersion = new ApiVersion(1, 0);
-                opt.ApiVersionReader = new HeaderApiVersionReader("api-version");
+                opt.ApiVersionReader = new HeaderApiVersionReader("api-version"); // CodeMaze 24
                 opt.Conventions.Controller<CompaniesController>().HasApiVersion(new ApiVersion(1, 0));
                 opt.Conventions.Controller<CompaniesV2Controller>().HasDeprecatedApiVersion(new ApiVersion(2, 0));
             });
         }
 
-        public static void ConfigureResponseCaching(this IServiceCollection services) => services.AddResponseCaching();
+        public static void ConfigureResponseCaching(this IServiceCollection services) => services.AddResponseCaching(); // CodeMaze 25
 
-        public static void ConfigureHttpCacheHeaders(this IServiceCollection services)
-        {
-            services.AddHttpCacheHeaders(
+        public static void ConfigureHttpCacheHeaders(this IServiceCollection services) => // CodeMaze 25
+            services.AddHttpCacheHeaders( // CodeMaze 25
                 (expirationOpt) =>
                 {
                     expirationOpt.MaxAge = 65;
@@ -112,10 +109,9 @@ namespace CompanyEmployees.Extensions
                 {
                     validationOpt.MustRevalidate = true;
                 });
-            // services.AddHttpContextAccessor(); 
-        }
+        // services.AddHttpContextAccessor(); 
 
-        public static void ConfigureRateLimitingOptions(this IServiceCollection services)
+        public static void ConfigureRateLimitingOptions(this IServiceCollection services) // CodeMaze 26
         {
             var rateLimitRules = new List<RateLimitRule>
             {
@@ -150,7 +146,8 @@ namespace CompanyEmployees.Extensions
             });
 
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
-            builder.AddEntityFrameworkStores<RepositoryContext>().AddDefaultTokenProviders();
+            builder.AddEntityFrameworkStores<RepositoryContext>()
+                .AddDefaultTokenProviders();
         }
 
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration) // CodeMaze 27
@@ -200,6 +197,7 @@ namespace CompanyEmployees.Extensions
                         Url = new Uri("https://example.com/license")
                     }
                 });
+
                 s.SwaggerDoc("v2", new OpenApiInfo { Title = "Code Maze API", Version = "v2" });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

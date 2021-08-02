@@ -8,18 +8,12 @@ using LoggerService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
 using NLog.Extensions.Logging;
 using Repository.DataShaping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CompanyEmployees
 {
@@ -43,26 +37,26 @@ namespace CompanyEmployees
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureCors(); // CodeMaze (custom)
-            services.ConfigureIISIntegration(); // CodeMaze (custom)
-            services.ConfigureLoggerService(); // CodeMaze (custom)
-            services.ConfigureSqlContext(Configuration); // CodeMaze (custom)
-            services.ConfigureRepositoryManager(); // CodeMaze (custom)
-            services.AddAutoMapper(typeof(Startup)); // CodeMaze
-            services.AddScoped<ValidationFilterAttribute>(); // CodeMaze (custom)
-            services.AddScoped<ValidateCompanyExistsAttribute>(); // CodeMaze (custom)
-            services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>(); // CodeMaze (custom)
+            services.ConfigureCors(); // CodeMaze 1 (custom)
+            services.ConfigureIISIntegration(); // CodeMaze 1 (custom)
+            services.ConfigureLoggerService(); // CodeMaze 2 (custom)
+            services.ConfigureSqlContext(Configuration); // CodeMaze 3 (custom)
+            services.ConfigureRepositoryManager(); // CodeMaze 3 (custom)
+            services.AddAutoMapper(typeof(Startup)); // CodeMaze 4
+            services.AddScoped<ValidationFilterAttribute>(); // CodeMaze 15 (custom)
+            services.AddScoped<ValidateCompanyExistsAttribute>(); // CodeMaze 15 (custom)
+            services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>(); // CodeMaze 15 (custom)
 
-            services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>(); // CodeMaze (custom)
+            services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>(); // CodeMaze 20 (custom)
 
-            services.AddScoped<ValidateMediaTypeAttribute>(); // CodeMaze (custom)
+            services.AddScoped<ValidateMediaTypeAttribute>(); // CodeMaze 21 (custom)
 
-            services.AddScoped<EmployeeLinks>(); // CodeMaze (custom)
+            services.AddScoped<EmployeeLinks>(); // CodeMaze 21 (custom)
 
-            services.ConfigureVersioning(); // CodeMaze (custom)
+            services.ConfigureVersioning(); // CodeMaze 24 (custom)
 
-            services.ConfigureResponseCaching(); // CodeMaze (custom)
-            services.ConfigureHttpCacheHeaders(); // CodeMaze (custom)
+            services.ConfigureResponseCaching(); // CodeMaze 25 (custom)
+            services.ConfigureHttpCacheHeaders(); // CodeMaze 25 (custom)
 
             services.AddMemoryCache(); // CodeMaze 26
 
@@ -76,20 +70,21 @@ namespace CompanyEmployees
 
             services.ConfigureSwagger(); // CodeMaze 28
 
-            services.Configure<ApiBehaviorOptions>(options =>
+            services.Configure<ApiBehaviorOptions>(options => // CodeMaze 13
             {
-                options.SuppressModelStateInvalidFilter = true; // CodeMaze
+                options.SuppressModelStateInvalidFilter = true; // CodeMaze 13
             });
-            // services.AddControllers(); // CodeMaze (replaced)
-            services.AddControllers(config =>
+
+            services.AddControllers(config => // CodeMaze 7
             {
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
-                config.CacheProfiles.Add("120SecondsDuration", new CacheProfile { Duration = 120 });
-            }).AddNewtonsoftJson() // CodeMaze
-              .AddXmlDataContractSerializerFormatters() // CodeMaze
-              .AddCustomCSVFormatter(); // CodeMaze
-            services.AddCustomMediaTypes();
+                config.CacheProfiles.Add("120SecondsDuration", new CacheProfile { Duration = 120 }); // CodeMaze 25
+            }).AddNewtonsoftJson() // CodeMaze 12
+              .AddXmlDataContractSerializerFormatters() // CodeMaze 7
+              .AddCustomCSVFormatter(); // CodeMaze 7
+            services.AddCustomMediaTypes(); // CodeMaze 21
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,17 +95,15 @@ namespace CompanyEmployees
                 app.UseDeveloperExceptionPage();
             }
             else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+            {                
+                app.UseHsts(); // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             }
 
-            app.ConfigureExceptionHandler(logger); // CodeMaze (custom)
+            app.ConfigureExceptionHandler(logger); // CodeMaze 5 (custom)
             app.UseHttpsRedirection();
-            app.UseStaticFiles(); // CodeMaze
+            app.UseStaticFiles(); // CodeMaze 1
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions // CodeMaze
+            app.UseForwardedHeaders(new ForwardedHeadersOptions // CodeMaze 1
             {
                 ForwardedHeaders = ForwardedHeaders.All
             });
@@ -118,10 +111,9 @@ namespace CompanyEmployees
             app.UseIpRateLimiting(); // CodeMaze 26
 
             app.UseRouting();
-            app.UseCors("CorsPolicy"); // CodeMaze
-            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
-            app.UseResponseCaching(); // CodeMaze
-            app.UseHttpCacheHeaders(); // CodeMaze
+            app.UseCors("CorsPolicy"); // CodeMaze 1
+            app.UseResponseCaching(); // CodeMaze 25
+            app.UseHttpCacheHeaders(); // CodeMaze 25
 
             app.UseAuthentication(); // CodeMaze 27
             app.UseAuthorization();
@@ -135,7 +127,7 @@ namespace CompanyEmployees
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers(); // CodeMaze
+                endpoints.MapControllers();
             });
         }
     }
